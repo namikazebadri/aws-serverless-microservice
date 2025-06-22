@@ -23,14 +23,16 @@ jobs:
         with:
           terraform_version: 1.7.5
 
+      - name: Set up Terraform credentials
+        run: |
+          mkdir -p ~/.terraform.d
+          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TFC_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
+
       - name: Terraform Init
-        env:
-          TFE_TOKEN: ${{ secrets.TFC_TOKEN }}
         run: terraform init
 
       - name: Terraform Apply
         env:
-          TFE_TOKEN: ${{ secrets.TFC_TOKEN }}
           TF_VAR_AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           TF_VAR_AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           TF_VAR_AWS_REGION: ${{ secrets.AWS_REGION }}
