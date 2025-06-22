@@ -3,25 +3,11 @@ locals {
   module          = "crontab"
   function        = "test_function"
   module_function = "${local.module}/${local.function}"
-  src_path        = "./lambda/${local.module_function}"
   binary_path     = "./bin/${local.module_function}/bootstrap"
   archive_path    = "./bin/${local.module_function}/${local.function}.zip"
 }
 
-resource "null_resource" "function_binary" {
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath /opt/hostedtoolcache/go/1.24.4/x64/bin/go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
-    interpreter = ["/bin/bash", "-c"]
-  }
-}
-
 data "archive_file" "function_archive" {
-  depends_on = [null_resource.function_binary]
-
   type        = "zip"
   source_file = local.binary_path
   output_path = local.archive_path
