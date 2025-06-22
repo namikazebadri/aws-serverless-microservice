@@ -27,6 +27,7 @@ jobs:
 
       - name: Build App
         run: |
+          # GO BUILD LIST (REMOVE UNNECESSARY BUILD MANUALLY)
           GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ./bin/async/test_function/bootstrap ./lambda/async/test_function
           GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ./bin/crontab/test_function/bootstrap ./lambda/crontab/test_function
           GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ./bin/https/test_function/bootstrap ./lambda/https/test_function
