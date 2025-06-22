@@ -23,16 +23,20 @@ jobs:
         with:
           terraform_version: 1.7.5
 
-      - name: Set up Terraform credentials
-        run: |
-          mkdir -p ~/.terraform.d
-          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TFC_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
-
       - name: Terraform Init
         run: terraform init
+        env:
+          TF_CLOUD_ORGANIZATION: "bct-research"
+          TF_API_TOKEN: "${{ secrets.TFC_TOKEN }}"
+          TF_WORKSPACE: "aws-serverless-microservice"
+          CONFIG_DIRECTORY: "./"
 
       - name: Terraform Apply
         env:
+          TF_CLOUD_ORGANIZATION: "bct-research"
+          TF_API_TOKEN: "${{ secrets.TFC_TOKEN }}"
+          TF_WORKSPACE: "aws-serverless-microservice"
+          CONFIG_DIRECTORY: "./"
           TF_VAR_AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           TF_VAR_AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           TF_VAR_AWS_REGION: ${{ secrets.AWS_REGION }}
