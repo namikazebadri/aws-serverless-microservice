@@ -57,4 +57,4 @@ jobs:
           TF_VAR_ENV: ${{ secrets.ENV }}
           TF_VAR_SECRET_MANAGER_NAME: ${{ secrets.SECRET_MANAGER_NAME }}
           TF_VAR_LAMBDA_ROLE: ${{ secrets.LAMBDA_ROLE }}
-        run: sudo terraform apply -auto-approve
+        run: terraform apply -auto-approve
