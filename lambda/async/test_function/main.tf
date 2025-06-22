@@ -39,7 +39,6 @@ resource "aws_lambda_function" "async_test_function" {
 
   filename         = local.archive_path
   source_code_hash = data.archive_file.function_archive.output_base64sha256
-  reserved_concurrent_executions = 50
 
   runtime = "provided.al2"
 
