@@ -18,6 +18,15 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Check TFE_TOKEN available
+        run: |
+          if [ -z "${{ secrets.TFE_TOKEN }}" ]; then
+            echo "❌ TFE_TOKEN is NOT set."
+            exit 1
+          else
+            echo "✅ TFE_TOKEN is set."
+          fi
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
