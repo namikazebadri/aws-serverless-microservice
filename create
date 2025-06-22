@@ -53,6 +53,9 @@ if [ "$lambdaType" = "crontab" ] || [ "$lambdaType" = "https" ] || [ "$lambdaTyp
     UPPERCASE_MODULE=$(echo "$lambdaType" | tr 'a-z' 'A-Z')
 
     sed -i -e "s/\/\/ ==== $UPPERCASE_MODULE MODULES ====/\/\/ ==== $UPPERCASE_MODULE MODULES ====\n\n\module \"$lambdaType\_$functionName\" \{\n  source = \".\/lambda\/$lambdaType\/$functionName\"\n \n  ENV = var.ENV\n  PROJECT = var.PROJECT\n  SECRET_MANAGER_NAME = var.SECRET_MANAGER_NAME\n  LAMBDA_ROLE = var.LAMBDA_ROLE \n\}/g" main.tf
+    sed -i '' "/# GO BUILD LIST (REMOVE UNNECESSARY BUILD MANUALLY)/a\\
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ./bin/$lambdaType/$functionName/bootstrap ./lambda/$lambdaType/$functionName
+    " .github/workflows/deploy.yml
 
     echo "Success creating functionName template"
   else
