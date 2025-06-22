@@ -15,7 +15,7 @@ resource "null_resource" "function_binary" {
 
   provisioner "local-exec" {
     command = <<EOT
-      export PATH="/home/runner/go/bin:$PATH"
+      export PATH="/opt/hostedtoolcache/go/1.24.4/x64/bin/:$PATH"
       which go
       go version
       GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}
