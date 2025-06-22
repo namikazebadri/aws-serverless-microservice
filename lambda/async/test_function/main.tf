@@ -14,7 +14,7 @@ resource "null_resource" "function_binary" {
   }
 
   provisioner "local-exec" {
-    command = "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath /opt/hostedtoolcache/go/1.24.4/x64/bin/go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
+    command = "ls /home/runner/go/bin"
     interpreter = ["/bin/bash", "-c"]
   }
 }
