@@ -14,7 +14,8 @@ resource "null_resource" "function_binary" {
   }
 
   provisioner "local-exec" {
-    command = "export PATH=/home/runner/go/bin:$PATH && go version && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
+    command = "PATH=$PATH:/home/runner/go/bin && go version && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
+    interpreter = ["/bin/bash", "-c"]
   }
 }
 
