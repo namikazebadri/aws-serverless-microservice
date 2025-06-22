@@ -17,10 +17,9 @@ resource "null_resource" "function_binary" {
     command = <<EOT
       set -e
 
-      sudo apt-get update -y
-      sudo apt-get install -y golang
+      apt-get update -y
+      apt-get install -y golang
 
-      # Cek versi go
       go version
 
       # Build binary pakai Go dari folder itu
