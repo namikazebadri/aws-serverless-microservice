@@ -23,6 +23,7 @@ jobs:
         run: |
           export PATH="/home/runner/go/bin:$PATH"
           go version
+          which go
 
       - name: Check TFE_TOKEN available
         run: |
