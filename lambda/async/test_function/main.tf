@@ -17,15 +17,11 @@ resource "null_resource" "function_binary" {
     command = <<EOT
       set -e
 
-      # Variabel versi dan folder
-      GO_VERSION=1.24.4
-      GO_DIR=/tmp/go-$GO_VERSION
-      GO_BIN=$GO_DIR/go/bin/go
+      sudo apt-get update -y
+      sudo apt-get install -y golang
 
-      # Download & extract Go
-      mkdir -p $GO_DIR
-      curl -sL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz -o /tmp/go.tar.gz
-      tar -C $GO_DIR -xzf /tmp/go.tar.gz --strip-components=1
+      # Cek versi go
+      go version
 
       # Build binary pakai Go dari folder itu
       GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}
