@@ -23,14 +23,6 @@ jobs:
         with:
           terraform_version: 1.7.5
 
-      - name: Terraform Init
-        run: terraform init
-        env:
-          TF_CLOUD_ORGANIZATION: "bct-research"
-          TF_API_TOKEN: "${{ secrets.TFC_TOKEN }}"
-          TF_WORKSPACE: "aws-serverless-microservice"
-          CONFIG_DIRECTORY: "./"
-
       - name: Terraform Apply
         env:
           TF_CLOUD_ORGANIZATION: "bct-research"
