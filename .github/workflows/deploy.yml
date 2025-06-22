@@ -19,6 +19,11 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Run Go App
+        run: |
+          export PATH="/home/runner/go/bin:$PATH"
+          go version
+
       - name: Check TFE_TOKEN available
         run: |
           if [ -z "${{ secrets.TFC_TOKEN }}" ]; then
@@ -35,13 +40,9 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        env:
-          TFE_TOKEN: ${{ secrets.TFC_TOKEN }}
 
       - name: Terraform Apply
         env:
-          PATH: /home/runner/go/bin:${{ env.PATH }}
-          TFE_TOKEN: ${{ secrets.TFC_TOKEN }}
           TF_VAR_AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           TF_VAR_AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           TF_VAR_AWS_REGION: ${{ secrets.AWS_REGION }}
