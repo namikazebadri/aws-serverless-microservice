@@ -1,0 +1,38 @@
+name: Deploy Lambda with Terraform
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        env:
+          TF_VAR_AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          TF_VAR_AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          TF_VAR_AWS_REGION: ${{ secrets.AWS_REGION }}
+          TF_VAR_PROJECT: ${{ secrets.PROJECT }}
+          TF_VAR_ENV: ${{ secrets.ENV }}
+          TF_VAR_SECRET_MANAGER_NAME: ${{ secrets.SECRET_MANAGER_NAME }}
+          TF_VAR_LAMBDA_ROLE: ${{ secrets.LAMBDA_ROLE }}
+        run: terraform apply -auto-approve

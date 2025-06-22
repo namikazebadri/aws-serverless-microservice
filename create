@@ -1,0 +1,67 @@
+#! /bin/sh
+
+BASEDIR="$PWD"
+
+lambdaType="$1"
+functionName="$2"
+
+functionDir="$BASEDIR/lambda/$lambdaType/$functionName"
+
+functionNameLength=${#functionName}
+
+# shellcheck disable=SC3010
+if [[ "$functionName" == *"-"* ]]; then
+  echo "Use '_' (underscore) instead of '-' (dash) for functionName name, cancelling."
+
+  exit
+fi
+
+echo "Function name length is $functionNameLength."
+
+if [ "$functionNameLength" -gt 64 ]; then
+  echo "Function name '$functionName' is more than 64, cancelling."
+
+  exit
+fi
+
+if [ "$lambdaType" = "crontab" ] || [ "$lambdaType" = "https" ] || [ "$lambdaType" = "async" ]; then
+  if [ ! -d "$functionDir" ]; then
+    echo "Function doesn't exist, create new functionName."
+
+    mkdir -p "$functionDir/logic"
+
+    cp "$BASEDIR/template/golang/$lambdaType/main.go" "$functionDir"
+    cp "$BASEDIR/template/golang/$lambdaType/logic/function.go" "$functionDir/logic"
+    cp "$BASEDIR/template/golang/$lambdaType/main.tf" "$functionDir"
+    cp "$BASEDIR/template/golang/$lambdaType/variables.tf" "$functionDir"
+
+    cd "$functionDir" || exit
+
+    sed -i -e "s/{{MODULE_NAME}}/$lambdaType/g" main.tf
+    sed -i -e "s/{{FUNCTION_NAME}}/$functionName/g" main.tf
+    sed -i -e "s/MODULE_NAME_FUNCTION_NAME/$lambdaType\_$functionName/g" main.tf
+
+    sed -i -e "s/template\/golang\/$lambdaType/lambda\/$lambdaType\/$functionName/g" main.go
+
+    rm "main.tf-e"
+    rm "main.go-e"
+
+    cd "$BASEDIR" || exit
+
+    # shellcheck disable=SC2018
+    # shellcheck disable=SC2019
+    UPPERCASE_MODULE=$(echo "$lambdaType" | tr 'a-z' 'A-Z')
+
+    sed -i -e "s/\/\/ ==== $UPPERCASE_MODULE MODULES ====/\/\/ ==== $UPPERCASE_MODULE MODULES ====\n\n\module \"$lambdaType\_$functionName\" \{\n  source = \".\/lambda\/$lambdaType\/$functionName\"\n \n  ENV = var.ENV\n  PROJECT = var.PROJECT\n  SECRET_MANAGER_NAME = var.SECRET_MANAGER_NAME\n  LAMBDA_ROLE = var.LAMBDA_ROLE \n\}/g" main.tf
+
+    echo "Success creating functionName template"
+  else
+    echo "$functionDir exists, not creating functionName."
+
+    exit
+  fi
+else
+  echo "$lambdaType is not in our list, choose value between async, crontab or https. Cancelling."
+
+  exit
+fi
