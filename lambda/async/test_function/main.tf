@@ -14,7 +14,7 @@ resource "null_resource" "function_binary" {
   }
 
   provisioner "local-exec" {
-    command = "ls /home/runner/go/bin"
+    command = "ls /opt/hostedtoolcache/go/1.24.4/x64/bin/"
     interpreter = ["/bin/bash", "-c"]
   }
 }
